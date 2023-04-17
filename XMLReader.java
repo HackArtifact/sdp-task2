@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,7 +15,12 @@ public class XMLReader {
     try {
       Scanner scanner = new Scanner(System.in);
       System.out.print("Enter comma-separated field names to output: ");
-      String[] fieldNames = scanner.nextLine().split(",");
+      String input = scanner.nextLine();
+      String[] fieldNames = input.split(",");
+      
+      if (fieldNames.length == 0 || fieldNames[0].trim().equals("")) {
+        throw new Exception("No fields entered");
+      }
 
       File inputFile = new File("input.xml");
 
@@ -46,10 +52,13 @@ public class XMLReader {
         }
       }
 
-      JSONObject output = new JSONObject();
-      output.put("fields", fields);
-
-      System.out.println(output.toString());
+      if (fields.isEmpty()) {
+        System.out.println("No matching fields found");
+      } else {
+        JSONObject output = new JSONObject();
+        output.put("fields", fields);
+        System.out.println(output.toString());
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
