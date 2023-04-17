@@ -1,7 +1,10 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -23,21 +26,30 @@ public class XMLReader {
 
       NodeList nList = doc.getElementsByTagName("field");
 
+      List<JSONObject> fields = new ArrayList<>();
+
       for (int i = 0; i < nList.getLength(); i++) {
         Node nNode = nList.item(i);
 
         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
           String name = nNode.getAttributes().getNamedItem("name").getTextContent();
           String value = nNode.getTextContent();
-          
+
           for (String fieldName : fieldNames) {
             if (name.equals(fieldName.trim())) {
-              System.out.println("Field Name: " + name);
-              System.out.println("Field Value: " + value);
+              JSONObject field = new JSONObject();
+              field.put("name", name);
+              field.put("value", value);
+              fields.add(field);
             }
           }
         }
       }
+
+      JSONObject output = new JSONObject();
+      output.put("fields", fields);
+
+      System.out.println(output.toString());
     } catch (Exception e) {
       e.printStackTrace();
     }
